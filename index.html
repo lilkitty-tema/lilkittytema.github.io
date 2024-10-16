@@ -111,42 +111,8 @@
                     <source src="musica/Lil_Kitty_Que_mas_te_da.mp3" type="audio/mpeg">
                     Tu navegador no soporta el elemento de audio.
                 </audio>
-                <p>Reproducciones: <span id="plays-song1">Cargando...</span></p>
             </div>
         </div>
     </div>
-
-    <script>
-        // JavaScript para contar reproducciones
-        document.addEventListener("DOMContentLoaded", function() {
-            const audioElements = document.querySelectorAll("audio");
-
-            audioElements.forEach((audio, index) => {
-                const songId = `song${index + 1}`;
-                const playCountElement = document.getElementById(`plays-${songId}`);
-
-                // Obtener las reproducciones desde la API al cargar la página
-                fetch(`https://lilkittytrue.replit.app/plays/${songId}`) // Cambia esto a la URL de tu API
-                    .then(response => response.json())
-                    .then(data => {
-                        playCountElement.textContent = data.plays;
-                    })
-                    .catch(error => console.error("Error al obtener reproducciones:", error));
-
-                // Incrementar el conteo de reproducciones al reproducir la canción
-                audio.addEventListener("play", function() {
-                    fetch(`https://lilkittytrue.replit.app/plays/${songId}`, {
-                        method: 'POST',
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        playCountElement.textContent = data.plays; // Actualizar el conteo mostrado
-                    })
-                    .catch(error => console.error("Error al incrementar reproducciones:", error));
-                });
-            });
-        });
-    </script>
-
 </body>
 </html>
