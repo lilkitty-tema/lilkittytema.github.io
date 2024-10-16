@@ -116,36 +116,37 @@
         </div>
     </div>
 
-    <script>
-        // JavaScript para contar reproducciones
-        document.addEventListener("DOMContentLoaded", async function() {
-            const songId = 'song1';
-            const playCountElement = document.getElementById(`plays-${songId}`);
-            
-            // Obtener el conteo de reproducciones de la API
-            try {
-                const response = await fetch(`http://localhost:3000/plays/${songId}`);
-                const data = await response.json();
-                playCountElement.textContent = data.plays;
-            } catch (error) {
-                console.error("Error al obtener el conteo de reproducciones", error);
-                playCountElement.textContent = "Error al cargar";
-            }
+   <script>
+    // JavaScript para contar reproducciones
+    document.addEventListener("DOMContentLoaded", function() {
+        const audioElements = document.querySelectorAll("audio");
 
-            const audioElement = document.querySelector("audio");
-            audioElement.addEventListener("play", async function() {
-                // Incrementar el conteo de reproducciones en la API
-                try {
-                    const response = await fetch(`http://localhost:3000/plays/${songId}`, {
-                        method: 'POST'
-                    });
-                    const data = await response.json();
+        audioElements.forEach((audio, index) => {
+            const songId = `song${index + 1}`;
+            const playCountElement = document.getElementById(`plays-${songId}`);
+
+            // Obtener las reproducciones desde la API al cargar la página
+            fetch(`http://localhost:3000/plays/${songId}`)
+                .then(response => response.json())
+                .then(data => {
                     playCountElement.textContent = data.plays;
-                } catch (error) {
-                    console.error("Error al incrementar reproducciones", error);
-                }
+                })
+                .catch(error => console.error("Error al obtener reproducciones:", error));
+
+            // Incrementar el conteo de reproducciones al reproducir la canción
+            audio.addEventListener("play", function() {
+                fetch(`http://localhost:3000/plays/${songId}`, {
+                    method: 'POST',
+                })
+                .then(response => response.json())
+                .then(data => {
+                    playCountElement.textContent = data.plays; // Actualizar el conteo mostrado
+                })
+                .catch(error => console.error("Error al incrementar reproducciones:", error));
             });
         });
-    </script>
+    });
+</script>
+
 </body>
 </html>
