@@ -1,7 +1,8 @@
-<html lang="es"><head>
+<html lang="es">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Música</title>
+    <title>Lil Kitty - Acceso anticipado</title>
     <style>
         /* Reset básico */
         * {
@@ -95,52 +96,56 @@
 </head>
 <body>
     <div class="container">
-        <!-- Encabezado con enlace a la página de información de Lil Kitty -->
-        
-
         <!-- Banner sobre el artista -->
         <div class="banner">
             <img alt="Foto Lil Kitty" src="https://yt3.googleusercontent.com/lAMKPoV1_zKYgaZzN98t6jxsrG1utNqwAPzJjYIChiOkdpF0ASSgx3lW-xgDqKDOq3r5Gbbu8Q=s2000-c-k-c0x00ffffff-no-rj">
             <h2>Lil Kitty</h2>
-            
-        <header>
-            
-            
-        <a href="lilkitty.html">Ver más sobre Lil Kitty</a></header><p>Aceso anticipado - Temas</p></div>
+            <p>Acceso anticipado - Temas</p>
+        </div>
 
         <!-- Lista de canciones -->
         <div class="song-list">
             <div class="song">
                 <h2>Canción 1</h2>
                 <audio controls="" style="border-radius: 23px;">
-                    <source src="path-to-your-song.mp3" type="audio/mpeg">
+                    <source src="musica/Lil_Kitty_Que_mas_te_da.mp3" type="audio/mpeg">
                     Tu navegador no soporta el elemento de audio.
                 </audio>
-                <p>Reproducciones: <span id="plays-song1">0</span></p>
+                <p>Reproducciones: <span id="plays-song1">Cargando...</span></p>
             </div>
-            
         </div>
     </div>
 
     <script>
         // JavaScript para contar reproducciones
-        document.addEventListener("DOMContentLoaded", function() {
-            const audioElements = document.querySelectorAll("audio");
-            const playCounts = JSON.parse(localStorage.getItem("playCounts")) || {};
+        document.addEventListener("DOMContentLoaded", async function() {
+            const songId = 'song1';
+            const playCountElement = document.getElementById(`plays-${songId}`);
+            
+            // Obtener el conteo de reproducciones de la API
+            try {
+                const response = await fetch(`http://localhost:3000/plays/${songId}`);
+                const data = await response.json();
+                playCountElement.textContent = data.plays;
+            } catch (error) {
+                console.error("Error al obtener el conteo de reproducciones", error);
+                playCountElement.textContent = "Error al cargar";
+            }
 
-            audioElements.forEach((audio, index) => {
-                const songId = `song${index + 1}`;
-                const playCountElement = document.getElementById(`plays-${songId}`);
-                playCountElement.textContent = playCounts[songId] || 0;
-
-                audio.addEventListener("play", function() {
-                    playCounts[songId] = (playCounts[songId] || 0) + 1;
-                    playCountElement.textContent = playCounts[songId];
-                    localStorage.setItem("playCounts", JSON.stringify(playCounts));
-                });
+            const audioElement = document.querySelector("audio");
+            audioElement.addEventListener("play", async function() {
+                // Incrementar el conteo de reproducciones en la API
+                try {
+                    const response = await fetch(`http://localhost:3000/plays/${songId}`, {
+                        method: 'POST'
+                    });
+                    const data = await response.json();
+                    playCountElement.textContent = data.plays;
+                } catch (error) {
+                    console.error("Error al incrementar reproducciones", error);
+                }
             });
         });
     </script>
-
-
-</body></html>
+</body>
+</html>
