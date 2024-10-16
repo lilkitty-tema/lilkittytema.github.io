@@ -116,37 +116,37 @@
         </div>
     </div>
 
-   <script>
-    // JavaScript para contar reproducciones
-    document.addEventListener("DOMContentLoaded", function() {
-        const audioElements = document.querySelectorAll("audio");
+    <script>
+        // JavaScript para contar reproducciones
+        document.addEventListener("DOMContentLoaded", function() {
+            const audioElements = document.querySelectorAll("audio");
 
-        audioElements.forEach((audio, index) => {
-            const songId = `song${index + 1}`;
-            const playCountElement = document.getElementById(`plays-${songId}`);
+            audioElements.forEach((audio, index) => {
+                const songId = `song${index + 1}`;
+                const playCountElement = document.getElementById(`plays-${songId}`);
 
-            // Obtener las reproducciones desde la API al cargar la página
-            fetch(`http://localhost:3000/plays/${songId}`)
-                .then(response => response.json())
-                .then(data => {
-                    playCountElement.textContent = data.plays;
-                })
-                .catch(error => console.error("Error al obtener reproducciones:", error));
+                // Obtener las reproducciones desde la API al cargar la página
+                fetch(`https://lilkittytrue.replit.app/plays/${songId}`) // Cambia esto a la URL de tu API
+                    .then(response => response.json())
+                    .then(data => {
+                        playCountElement.textContent = data.plays;
+                    })
+                    .catch(error => console.error("Error al obtener reproducciones:", error));
 
-            // Incrementar el conteo de reproducciones al reproducir la canción
-            audio.addEventListener("play", function() {
-                fetch(`http://localhost:3000/plays/${songId}`, {
-                    method: 'POST',
-                })
-                .then(response => response.json())
-                .then(data => {
-                    playCountElement.textContent = data.plays; // Actualizar el conteo mostrado
-                })
-                .catch(error => console.error("Error al incrementar reproducciones:", error));
+                // Incrementar el conteo de reproducciones al reproducir la canción
+                audio.addEventListener("play", function() {
+                    fetch(`https://lilkittytrue.replit.app/plays/${songId}`, {
+                        method: 'POST',
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        playCountElement.textContent = data.plays; // Actualizar el conteo mostrado
+                    })
+                    .catch(error => console.error("Error al incrementar reproducciones:", error));
+                });
             });
         });
-    });
-</script>
+    </script>
 
 </body>
 </html>
